@@ -1,6 +1,6 @@
-import { UserModel } from "../models";
-import { createReducer, on, Action } from "@ngrx/store";
-import { AuthApiActions, AuthUserActions } from "src/app/auth/actions";
+import { UserModel } from '../models';
+import { createReducer, on, Action } from '@ngrx/store';
+import { AuthApiActions, AuthUserActions } from 'src/app/auth/actions';
 
 export interface State {
   gettingStatus: boolean;
@@ -11,23 +11,49 @@ export interface State {
 const initialState: State = {
   gettingStatus: true,
   user: null,
-  error: null
+  error: null,
 };
 
 export const authReducer = createReducer(
   initialState,
   on(AuthUserActions.logout, (state, action) => {
     return {
+      ...state,
       gettingStatus: false,
       user: null,
-      error: null
+      error: null,
     };
   }),
   on(AuthUserActions.login, (state, action) => {
     return {
+      ...state,
       gettingStatus: true,
       user: null,
-      error: null
+      error: null,
+    };
+  }),
+  on(AuthApiActions.getAuthStatusSuccess, (state, action) => {
+    return {
+      ...state,
+      gettingStatus: false,
+      user: action.user,
+      error: null,
+    };
+  }),
+  on(AuthApiActions.loginSuccess, (state, action) => {
+    return {
+      ...state,
+      gettingStatus: false,
+      user: action.user,
+      error: null,
+    };
+  }),
+  on(AuthApiActions.loginFailure, (state, action) => {
+    return {
+      ...state,
+      gettingStatus: false,
+      user: null,
+      error: action.reason,
     };
   })
 );
